@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hospital Daily Account</title>
+<style>
+:root{--bg:#f3f6f9;--card:#fff;--tx:#1b2733;--mu:#5d6b78;--bd:#d6dee6;--pr:#0b6e8a;--pt:#fff;--ok:#12803c;--bad:#c0392b;--hl:#e6f3f7;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10171d;--card:#18222b;--tx:#e8eef3;--mu:#9aa9b6;--bd:#2c3b48;--pr:#3fb0cf;--pt:#06232c;--ok:#4cc07a;--bad:#ff7b6b;--hl:#1b2f3a}}
+:root[data-theme="dark"]{--bg:#10171d;--card:#18222b;--tx:#e8eef3;--mu:#9aa9b6;--bd:#2c3b48;--pr:#3fb0cf;--pt:#06232c;--ok:#4cc07a;--bad:#ff7b6b;--hl:#1b2f3a}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:820px;margin:0 auto;padding:12px}
+header{background:var(--pr);color:var(--pt);border-radius:12px;padding:16px;text-align:center}
+header h1{margin:0 0 4px;font-size:1.3rem}header p{margin:2px 0;font-size:.9rem}
+section{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-top:12px}
+h2{margin:0 0 10px;font-size:1.05rem;color:var(--pr)}
+.g{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.g{grid-template-columns:1fr}}
+label{display:block;font-size:.85rem;color:var(--mu);margin-bottom:3px}
+input,select,textarea{width:100%;padding:9px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);font:inherit}
+.tot{margin-top:10px;padding:9px 12px;background:var(--hl);border-radius:8px;font-weight:600;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.row{display:grid;grid-template-columns:2fr 1fr 1fr auto;gap:6px;margin-bottom:6px}
+.row.e{grid-template-columns:3fr 1.2fr auto}
+@media(max-width:480px){.row,.row.e{grid-template-columns:1fr 1fr}.row input:first-child,.row.e input:first-child{grid-column:1/-1}}
+button{padding:9px 14px;border:0;border-radius:8px;background:var(--pr);color:var(--pt);font:inherit;font-weight:600;cursor:pointer}
+button.s{background:transparent;color:var(--pr);border:1px solid var(--pr)}
+button.d{background:var(--bad);color:#fff;padding:9px 11px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+table{width:100%;border-collapse:collapse}
+td,th{padding:7px 6px;border-bottom:1px solid var(--bd);text-align:left;font-size:.92rem}
+.sm td:last-child{text-align:right;font-weight:600}
+.net{color:var(--ok)}.neg{color:var(--bad)}
+textarea{min-height:80px;font:12px monospace}
+.hi{overflow-x:auto}
+@media print{body{background:#fff;color:#000}.noprint{display:none!important}section,header{border:1px solid #999;break-inside:avoid;background:#fff;color:#000}input,select{border:0;background:none;color:#000;padding:0}}
+</style>
+</head>
+<body>
+<div class="w">
+<header>
+<h1>Orthoplus Hospital &amp; Trauma Care Center</h1>
+<p>Dr. Viral Kalariya (MBBS D’ortho FIJR, FIAS — Trauma &amp; Joint Replacement, Reg. no. G 0903)</p>
+<p>Sara Road, Rudra Gate No. 1, Halvad | Mo. 92743 05353</p>
+</header>
+
+<section><div class="g">
+<div><label>Date</label><input type="date" id="date"></div>
+<div><label>Account done by</label><input id="by" placeholder="Enter name"></div>
+</div></section>
+
+<section><h2>Medical Income — Twasha Medical &amp; Surgical Store</h2>
+<div class="g"><div><label>Cash (₹)</label><input type="number" inputmode="decimal" id="mc"></div>
+<div><label>Online / UPI (₹)</label><input type="number" inputmode="decimal" id="mo"></div></div>
+<div class="tot"><span>Total Medical Income</span><span id="tm"></span></div></section>
+
+<section><h2>Reception Income &amp; Patients</h2>
+<div class="g"><div><label>Cash (₹)</label><input type="number" inputmode="decimal" id="rc"></div>
+<div><label>Online (₹)</label><input type="number" inputmode="decimal" id="ro"></div>
+<div><label>New patients</label><input type="number" inputmode="numeric" id="np"></div>
+<div><label>Follow-up patients</label><input type="number" inputmode="numeric" id="fp"></div></div>
+<div class="tot"><span>Total Reception Income</span><span id="tr"></span></div>
+<div class="tot"><span>Total Patients</span><span id="tp"></span></div></section>
+
+<section><h2>X-Ray Income</h2>
+<div class="g"><div><label>Cash (₹)</label><input type="number" inputmode="decimal" id="xc"></div>
+<div><label>Online (₹)</label><input type="number" inputmode="decimal" id="xo"></div></div>
+<div class="tot"><span>Total X-Ray Income</span><span id="tx"></span></div></section>
+
+<section><h2>Procedure Charges</h2>
+<div id="pl"></div>
+<button class="s noprint" onclick="addP()">+ Add Charge</button>
+<div class="tot"><span>Cash: <span id="pc"></span></span><span>Online: <span id="po"></span></span><span>Total: <span id="pt"></span></span></div></section>
+
+<section><h2>Hospital Expenses</h2>
+<div id="el"></div>
+<button class="s noprint" onclick="addE()">+ Add Expense</button>
+<div class="tot"><span>Total Expenses</span><span id="te"></span></div></section>
+
+<section><h2>Cash Balance Kept</h2>
+<div class="g"><div><label>Medical balance (₹)</label><input type="number" inputmode="decimal" id="ms"></div>
+<div><label>Reception balance (₹)</label><input type="number" inputmode="decimal" id="rs"></div></div>
+<div class="tot"><span>Total Cash Balance</span><span id="ts"></span></div></section>
+
+<section><h2>Final Account Summary</h2>
+<table class="sm"><tr><td>Date</td><td id="sd"></td></tr><tr><td>Account done by</td><td id="sb"></td></tr>
+<tr><td>Total Income</td><td id="sa"></td></tr><tr><td>Total Cash Income</td><td id="sc"></td></tr><tr><td>Total Online Income</td><td id="so"></td></tr>
+<tr><td>Total Expenses</td><td id="se"></td></tr><tr><td>Net (Income − Expenses)</td><td id="sn" class="net"></td></tr><tr><td>Total Cash Balance</td><td id="ss"></td></tr></table>
+<div class="bar noprint"><button onclick="save()">Save Today’s Account to History</button><button class="s" onclick="newE()">Clear Form (New Entry)</button><button class="s" onclick="window.print()">Print / Save PDF</button></div>
+<div id="msg" class="noprint" style="margin-top:8px;color:var(--ok)"></div></section>
+
+<section class="noprint"><h2>History</h2><div class="hi"><table id="ht"></table></div></section>
+
+<section class="noprint"><h2>JSON Backup</h2>
+<div class="bar" style="margin:0 0 8px"><button onclick="exp()">Export</button><button class="s" onclick="imp()">Import</button></div>
+<textarea id="bk" placeholder="Press Export, then copy and keep this text safe. To restore, paste the backup here and press Import."></textarea></section>
+</div>
+<script>
+const $=i=>document.getElementById(i),N=v=>parseFloat(v)||0,R=n=>'₹ '+n.toLocaleString('en-IN');
+const K=['date','by','mc','mo','rc','ro','np','fp','xc','xo','ms','rs'];
+const blank=()=>{const o={proc:[],exp:[]};K.forEach(k=>o[k]='');o.date=new Date().toISOString().slice(0,10);return o};
+const ld=(k,d)=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}};
+const st=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+let S=ld('hdh_cur',null)||blank(),H=ld('hdh_hist',{});
+function say(t){$('msg').textContent=t;setTimeout(()=>$('msg').textContent='',3000)}
+K.forEach(k=>$(k).addEventListener('input',e=>{S[k]=e.target.value;calc()}));
+function fill(){K.forEach(k=>$(k).value=S[k]||'');rl();calc();hist()}
+const esc=s=>String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+function rl(){
+$('pl').innerHTML=S.proc.map((p,i)=>`<div class="row"><input placeholder="Details (Dressing, Injection…)" value="${esc(p.d)}" oninput="S.proc[${i}].d=this.value;calc()"><select onchange="S.proc[${i}].m=this.value;calc()"><option${p.m=='Cash'?' selected':''}>Cash</option><option${p.m=='Online'?' selected':''}>Online</option></select><input type="number" inputmode="decimal" placeholder="₹" value="${p.a}" oninput="S.proc[${i}].a=this.value;calc()"><button class="d noprint" onclick="S.proc.splice(${i},1);rl();calc()">✕</button></div>`).join('');
+$('el').innerHTML=S.exp.map((p,i)=>`<div class="row e"><input placeholder="Expense details (Tea/snacks, Cleaning…)" value="${esc(p.d)}" oninput="S.exp[${i}].d=this.value;calc()"><input type="number" inputmode="decimal" placeholder="₹" value="${p.a}" oninput="S.exp[${i}].a=this.value;calc()"><button class="d noprint" onclick="S.exp.splice(${i},1);rl();calc()">✕</button></div>`).join('')}
+function addP(){S.proc.push({d:'',m:'Cash',a:''});rl();calc()}
+function addE(){S.exp.push({d:'',a:''});rl();calc()}
+function T(s){const m=N(s.mc)+N(s.mo),r=N(s.rc)+N(s.ro),x=N(s.xc)+N(s.xo);
+const pc=s.proc.filter(p=>p.m=='Cash').reduce((a,p)=>a+N(p.a),0),po=s.proc.filter(p=>p.m=='Online').reduce((a,p)=>a+N(p.a),0);
+const e=s.exp.reduce((a,p)=>a+N(p.a),0),inc=m+r+x+pc+po;
+return{m,r,x,pc,po,e,inc,cash:N(s.mc)+N(s.rc)+N(s.xc)+pc,onl:N(s.mo)+N(s.ro)+N(s.xo)+po,net:inc-e,bal:N(s.ms)+N(s.rs),pat:N(s.np)+N(s.fp)}}
+function calc(){const t=T(S),v=(i,x)=>$(i).textContent=x;
+v('tm',R(t.m));v('tr',R(t.r));v('tp',t.pat);v('tx',R(t.x));v('pc',R(t.pc));v('po',R(t.po));v('pt',R(t.pc+t.po));v('te',R(t.e));v('ts',R(t.bal));
+v('sd',S.date.split('-').reverse().join('-'));v('sb',S.by||'—');v('sa',R(t.inc));v('sc',R(t.cash));v('so',R(t.onl));v('se',R(t.e));v('sn',R(t.net));v('ss',R(t.bal));
+$('sn').className=t.net<0?'neg':'net';st('hdh_cur',S)}
+function save(){if(!S.date){say('Please select a date first');return}H[S.date]=JSON.parse(JSON.stringify(S));st('hdh_hist',H);hist();say('Saved to History ✓')}
+function newE(){if(confirm('Clear the form? Unsaved data will be lost.')){S=blank();fill()}}
+function hist(){const ks=Object.keys(H).sort().reverse();
+$('ht').innerHTML=ks.length?'<tr><th>Date</th><th>Income</th><th>Expense</th><th>Net</th><th></th></tr>'+ks.map(k=>{const t=T(H[k]);return`<tr><td>${k.split('-').reverse().join('-')}</td><td>${R(t.inc)}</td><td>${R(t.e)}</td><td>${R(t.net)}</td><td><button class="s" onclick="op('${k}')">Open</button> <button class="d" onclick="del('${k}')">✕</button></td></tr>`}).join(''):'<tr><td>No records yet.</td></tr>'}
+function op(k){S=JSON.parse(JSON.stringify(H[k]));fill();scrollTo(0,0)}
+function del(k){if(confirm('Delete this record?')){delete H[k];st('hdh_hist',H);hist()}}
+function exp(){const j=JSON.stringify({cur:S,hist:H},null,1);$('bk').value=j;
+try{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([j],{type:'application/json'}));a.download='hospital-backup-'+S.date+'.json';a.click()}catch(e){}}
+function imp(){try{const o=JSON.parse($('bk').value);if(!o.hist)throw 0;H=o.hist;S=Object.assign(blank(),o.cur||{});st('hdh_hist',H);fill();say('Imported ✓')}catch(e){say('Invalid backup text')}}
+fill();
+</script>
+</body>
+</html>
